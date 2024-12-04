@@ -24,3 +24,31 @@ function generateUsername() {
 async function checkUsername(username) {
     const output = document.getElementById("output");
     const url = `https://www.tiktok.com/@${username}`;
+    try {
+        const response = await fetch(url, {
+            headers: {
+                "User-Agent": "Mozilla/5.0 (Linux; Android 8.0.0; Plume L2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.88 Mobile Safari/537.36",
+            },
+        });
+
+        if (response.status === 404) {
+            output.innerHTML += `<p class="good">Available Username: ${username}</p>`;
+        } else {
+            output.innerHTML += `<p class="bad">Taken Username: ${username}</p>`;
+        }
+    } catch (error) {
+        output.innerHTML += `<p class="bad">Error checking: ${username}</p>`;
+    }
+}
+
+// بدء عملية التحقق المستمرة
+function startChecking() {
+    const output = document.getElementById("output");
+    output.innerHTML = "<p>Starting...</p>";
+
+    // عملية مستمرة طالما المستخدم في الصفحة
+    setInterval(() => {
+        const username = generateUsername();
+        checkUsername(username);
+    }, 1000); // تحقق من اسم مستخدم جديد كل ثانية
+}
